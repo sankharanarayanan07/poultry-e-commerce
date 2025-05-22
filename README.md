@@ -1,23 +1,23 @@
-# 🛒 MERN Stack E-Commerce Website
+#  MERN Stack E-Commerce Website
 
 A full-featured e-commerce web application built using the **MERN stack** (MongoDB, Express.js, React.js, Node.js), styled with **Tailwind CSS**, and packed with powerful features like secure authentication, cloud image storage, and caching.
 Special thanks to the contributors safrin bargana , reshma , rohan , sahasran .
 This website will soon be renamed ...
 ---
 
-## 🚀 Live Demo
-🌐 [Visit the Live Site](https://your-render-app-url.com)
+## Live Demo
+ [Visit the Live Site](https://your-render-app-url.com)
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
-### 🖥 Frontend:
+###  Frontend:
 - **React.js**
 - **Tailwind CSS** for modern, responsive design
 - **Axios** for API communication
 
-### 🌐 Backend:
+###  Backend:
 - **Node.js** + **Express.js**
 - **MongoDB** (via Mongoose)
 - **Redis** for caching
@@ -27,7 +27,7 @@ This website will soon be renamed ...
 
 ---
 
-## 🔐 Authentication & Security
+##  Authentication & Security
 
 - **JWT-based authentication** for secure access control
 - **bcrypt** used to hash passwords before storing in MongoDB
@@ -36,7 +36,7 @@ This website will soon be renamed ...
 
 ---
 
-## 📦 Features
+##  Features
 
 - User authentication (Sign up / Sign in)
 - Product listing & filtering
@@ -51,15 +51,3 @@ This website will soon be renamed ...
 
 ---
 
-## 🛠 Installation & Setup
-
-### Prerequisites:
-- Node.js & npm
-- MongoDB (local or Atlas)
-- Redis
-- Cloudinary account
-
-### Clone the repo:
-```bash
-git clone https://github.com/your-username/your-ecommerce-app.git
-cd your-ecommerce-app
