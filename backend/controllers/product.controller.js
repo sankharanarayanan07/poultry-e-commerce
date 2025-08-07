@@ -1,10 +1,9 @@
-import { redis } from "../lib/redis.js";
 import cloudinary from "../lib/cloudinary.js";
 import Product from "../models/product.model.js";
 
 export const getAllProducts = async (req, res) => {
 	try {
-		const products = await Product.find({}); // find all products
+		const products = await Product.find({});
 		res.json({ products });
 	} catch (error) {
 		console.log("Error in getAllProducts controller", error.message);
@@ -14,23 +13,11 @@ export const getAllProducts = async (req, res) => {
 
 export const getFeaturedProducts = async (req, res) => {
 	try {
-		let featuredProducts = await redis.get("featured_products");
-		if (featuredProducts) {
-			return res.json(JSON.parse(featuredProducts));
-		}
+		const featuredProducts = await Product.find({ isFeatured: true }).lean();
 
-		// if not in redis, fetch from mongodb
-		// .lean() is gonna return a plain javascript object instead of a mongodb document
-		// which is good for performance
-		featuredProducts = await Product.find({ isFeatured: true }).lean();
-
-		if (!featuredProducts) {
+		if (!featuredProducts || featuredProducts.length === 0) {
 			return res.status(404).json({ message: "No featured products found" });
 		}
-
-		// store in redis for future quick access
-
-		await redis.set("featured_products", JSON.stringify(featuredProducts));
 
 		res.json(featuredProducts);
 	} catch (error) {
@@ -76,9 +63,9 @@ export const deleteProduct = async (req, res) => {
 			const publicId = product.image.split("/").pop().split(".")[0];
 			try {
 				await cloudinary.uploader.destroy(`products/${publicId}`);
-				console.log("deleted image from cloduinary");
+				console.log("deleted image from cloudinary");
 			} catch (error) {
-				console.log("error deleting image from cloduinary", error);
+				console.log("error deleting image from cloudinary", error);
 			}
 		}
 
@@ -94,9 +81,7 @@ export const deleteProduct = async (req, res) => {
 export const getRecommendedProducts = async (req, res) => {
 	try {
 		const products = await Product.aggregate([
-			{
-				$sample: { size: 4 },
-			},
+			{ $sample: { size: 4 } },
 			{
 				$project: {
 					_id: 1,
@@ -132,7 +117,6 @@ export const toggleFeaturedProduct = async (req, res) => {
 		if (product) {
 			product.isFeatured = !product.isFeatured;
 			const updatedProduct = await product.save();
-			await updateFeaturedProductsCache();
 			res.json(updatedProduct);
 		} else {
 			res.status(404).json({ message: "Product not found" });
@@ -142,14 +126,3 @@ export const toggleFeaturedProduct = async (req, res) => {
 		res.status(500).json({ message: "Server error", error: error.message });
 	}
 };
-
-async function updateFeaturedProductsCache() {
-	try {
-		// The lean() method  is used to return plain JavaScript objects instead of full Mongoose documents. This can significantly improve performance
-
-		const featuredProducts = await Product.find({ isFeatured: true }).lean();
-		await redis.set("featured_products", JSON.stringify(featuredProducts));
-	} catch (error) {
-		console.log("error in update cache function");
-	}
-}
